@@ -1,3 +1,13 @@
 {
-  "extends": "next/core-web-vitals"
+  "editor.formatOnSave": true,
+  "extends": "next/core-web-vitals",
+  "editor.codeActionsOnSave": {
+      "source.fixAll.eslint": true
+  },
+  "eslint.validate": [
+      "javascript",
+      "javascriptreact"
+      
+  ]
 }
+
