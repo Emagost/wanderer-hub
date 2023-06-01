@@ -6,17 +6,24 @@ interface MessageProps {
   user: User | null;
 }
 
+const FALLBACK_IMAGE_URL = 'https://random.imagecdn.app/500/150';
+
 const Message = ({ user }: MessageProps) => {
   return (
     <>
       {user && (
-        <div className="flex justify-center align-middle">
+        <div className="flex items-center p-4 bg-gray-700 text-white rounded-xl">
           <img
             className="w-10 h-10 rounded-full mr-4"
-            src={user.photoURL || 'https://random.imagecdn.app/500/150'}
-            alt={user.displayName || 'noImageIcon'}
+            src={user.photoURL || FALLBACK_IMAGE_URL}
+            alt={user.displayName || 'profile-img'}
+            referrerPolicy="no-referrer"
           />
-          <p>{user.displayName}</p>
+          <div>
+            <h3 className="text-lg font-semibold">{user.displayName}</h3>
+            {/* Here is the message from user */}
+            <p className="text-sm">Active</p>
+          </div>
         </div>
       )}
     </>
