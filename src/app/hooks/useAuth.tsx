@@ -1,19 +1,15 @@
-import { useState, useEffect } from 'react';
-//Route
+import { useState, useEffect, useCallback } from 'react';
+// Route
 import { useRouter, usePathname } from 'next/navigation';
-//Firebase
-import { getFirestore, doc, setDoc } from 'firebase/firestore';
+// Firebase
+import { doc, setDoc, getDoc } from 'firebase/firestore';
 import {
   getAuth,
   GoogleAuthProvider,
   signInWithPopup,
-  User,
+  type User,
 } from 'firebase/auth';
-import firebase from 'firebase/compat/app';
-import firebaseConfig from '../../../firebaseConfig';
-
-// Inicializa la app de Firebase
-firebase.initializeApp(firebaseConfig);
+import { db } from '../../../firebase';
 
 const provider = new GoogleAuthProvider();
 const auth = getAuth();
@@ -23,34 +19,65 @@ export const useAuth = () => {
   const router = useRouter();
   const pathname = usePathname();
 
-  const signInWithGoogle = async () => {
+  const signInWithGoogle = useCallback(async () => {
     try {
       const result = await signInWithPopup(auth, provider);
       setUser(result.user);
+
+      const { displayName, email, uid, photoURL, metadata } = result.user;
+      const { lastSignInTime, creationTime } = metadata;
+
+      const userRef = doc(db, 'users', uid);
+      const userDoc = await getDoc(userRef);
+
+      if (userDoc.exists()) {
+        await setDoc(
+          userRef,
+          {
+            metadata: {
+              lastSignInTime,
+            },
+          },
+          { merge: true }
+        );
+      } else {
+        await setDoc(userRef, {
+          name: displayName,
+          email,
+          uid,
+          photoURL,
+          metadata: {
+            lastSignInTime,
+            creationTime,
+          },
+        });
+      }
     } catch (error) {
       console.error('Error logging in:', error);
     }
-  };
+  }, []);
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
-      if (user) {
+      if (user != null) {
         setUser(user);
       } else {
         setUser(null);
       }
     });
 
-    return () => unsubscribe();
+    return () => {
+      unsubscribe();
+    };
   }, []);
 
   useEffect(() => {
-    if (user && pathname === '/login') {
+    if (user != null && pathname === '/login') {
       router.push('/generalChat');
     }
   }, [user, pathname, router]);
 
-  const logout = async () => {
+  const logout = useCallback(async () => {
     await auth
       .signOut()
       .then(() => {
@@ -59,9 +86,7 @@ export const useAuth = () => {
       .catch((error) => {
         console.error('Error logout:', error);
       });
-  };
-
-  console.log(user);
+  }, [router]);
 
   return { user, signInWithGoogle, logout };
 };

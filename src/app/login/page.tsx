@@ -1,16 +1,14 @@
 'use client';
-import { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '../hooks/useAuth';
-import { getFirestore, doc, setDoc } from 'firebase/firestore';
-import { User } from 'firebase/auth';
 
 const Login = () => {
   const router = useRouter();
   const { user, signInWithGoogle } = useAuth();
 
   useEffect(() => {
-    if (user) {
+    if (user != null) {
       router.push('/generalChat');
     }
   }, [user, router]);
@@ -18,7 +16,7 @@ const Login = () => {
   const handleGoogleLogin = useCallback(async () => {
     await signInWithGoogle();
     router.push('/generalChat');
-  }, []);
+  }, [router, signInWithGoogle]);
 
   return (
     <div className="flex flex-col items-center justify-center h-screen bg-gray-900">
