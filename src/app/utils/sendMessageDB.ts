@@ -12,7 +12,7 @@ const sendMessageDB = async (data: IDataMessage) => {
     message,
     timestamp: new Date().getTime(),
     metadata: {
-      name: metadata.displayName,
+      displayName: metadata.displayName,
       uid: metadata.uid,
       photoURL: metadata.photoURL,
     },

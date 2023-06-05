@@ -30,9 +30,18 @@ const TextField = ({ user }: TProps) => {
       setMessage('');
       await sendMessageDB({ message, metadata: user as any });
     } catch (error) {
-      console.error('Error creando mensaje:', error);
+      console.error('Error sending message:', error);
     }
   }, [message, useHasData, user]);
+
+  const handleKeyPress = useCallback(
+    (event: React.KeyboardEvent<HTMLInputElement>) => {
+      if (event.key === 'Enter') {
+        handleOnSubmitMessage();
+      }
+    },
+    [handleOnSubmitMessage]
+  );
 
   return (
     <div className="flex justify-center items-center p-4">
@@ -41,6 +50,7 @@ const TextField = ({ user }: TProps) => {
         className="w-full bg-slate-100 rounded-xl text-black outline-none px-2 py-1 dark:bg-gray-800 dark:text-white"
         value={message}
         onChange={handleSetMessage}
+        onKeyDown={handleKeyPress}
       ></input>
       <div className="flex justify-center items-center m-6 w-6 h-6 bg-gray-800 rounded-xl">
         <button

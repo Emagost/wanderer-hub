@@ -21,7 +21,7 @@ const Message = ({ dataMessage }: MessageProps) => {
       </div>
       <div className="flex items-center p-4 bg-gray-800 text-white rounded-lg">
         <div>
-          <h3 className="text-lg font-semibold">
+          <h3 className="text-base font-semibold">
             {dataMessage.metadata.displayName}
           </h3>
           <p className="text-sm">{dataMessage.message}</p>
