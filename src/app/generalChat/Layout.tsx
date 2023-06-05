@@ -1,7 +1,6 @@
 'use client';
 import React, { Suspense } from 'react';
 import { useAuth } from '../hooks/useAuth';
-import GeneralChat from './page';
 import Loading from './Loading';
 
 const GeneralLayout = ({ children }: { children: React.ReactNode }) => {
@@ -17,9 +16,7 @@ const GeneralLayout = ({ children }: { children: React.ReactNode }) => {
           Logout
         </button>
       </nav>
-      <Suspense fallback={<Loading />}>
-        <GeneralChat />
-      </Suspense>
+      <Suspense fallback={<Loading />}>{children}</Suspense>
     </section>
   );
 };
