@@ -19,7 +19,7 @@ const Login = () => {
   }, [router, signInWithGoogle]);
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen bg-gray-900">
+    <div className="flex flex-col items-center justify-center h-screen bg-[#1a1e25]">
       <h1 className="text-4xl font-bold text-white mb-4">
         Welcome to WandererHub
       </h1>
@@ -27,7 +27,7 @@ const Login = () => {
         Discover amazing destinations and connect with fellow travelers.
       </p>
       <button
-        className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded"
+        className="bg-[#61a6f6] hover:bg-[#429bf5] text-white rounded-lg px-4 py-2"
         onClick={handleGoogleLogin}
       >
         Sign in with Google

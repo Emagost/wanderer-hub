@@ -1,6 +1,8 @@
+import { type FieldValue } from 'firebase/firestore';
+
 export default interface IDataMessage {
   message: string;
-  timestamp?: number;
+  createdAt: FieldValue;
   metadata: {
     displayName: string;
     photoURL: string;

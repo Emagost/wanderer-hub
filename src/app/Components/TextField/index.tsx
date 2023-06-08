@@ -1,4 +1,6 @@
 import React, { useCallback, useMemo, useState } from 'react';
+// Firebase
+import { serverTimestamp } from 'firebase/firestore';
 // Types
 import { type User } from 'firebase/auth';
 import sendMessageDB from '@/app/utils/sendMessageDB';
@@ -28,7 +30,11 @@ const TextField = ({ user }: TProps) => {
 
     try {
       setMessage('');
-      await sendMessageDB({ message, metadata: user as any });
+      await sendMessageDB({
+        message,
+        metadata: user as any,
+        createdAt: serverTimestamp(),
+      });
     } catch (error) {
       console.error('Error sending message:', error);
     }
