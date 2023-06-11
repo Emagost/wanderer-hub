@@ -3,9 +3,7 @@ import React, { Suspense } from 'react';
 // Hooks
 import { useAuth } from '../hooks/useAuth';
 // Components
-import Image from 'next/image';
 import Loading from './Loading';
-import Link from 'next/link';
 
 const GeneralLayout = ({ children }: { children: React.ReactNode }) => {
   const { logout, user } = useAuth();
@@ -16,16 +14,12 @@ const GeneralLayout = ({ children }: { children: React.ReactNode }) => {
       <nav className="bg-[#1a1e25]">
         <div className="flex justify-between items-center p-4">
           {user?.photoURL && (
-            <Link href="/" as={'image'}>
-              <Image
-                className="ml-5 rounded-full w-14 h-14 "
-                src={user?.photoURL}
-                width={56}
-                height={56}
-                alt="User Avatar"
-                style={{ border: '2px solid #61a6f6' }}
-              />
-            </Link>
+            <img
+              className="ml-5 rounded-full w-14 h-14 "
+              src={user?.photoURL}
+              alt="User Avatar"
+              style={{ border: '2px solid #61a6f6' }}
+            />
           )}
           <h1 className="text-4xl font-bold text-white">WandererHub</h1>
           <button

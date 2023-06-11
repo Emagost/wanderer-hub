@@ -6,15 +6,13 @@ interface MessageProps {
   dataMessage: IDataMessage;
 }
 
-const FALLBACK_IMAGE_URL = 'https://random.imagecdn.app/500/150';
-
 const Message = ({ dataMessage }: MessageProps) => {
   return (
     <div className="flex mt-3">
       <div className="flex items-end">
         <img
           className="w-10 h-10 rounded-full mr-3 "
-          src={dataMessage.metadata.photoURL ?? FALLBACK_IMAGE_URL}
+          src={dataMessage.metadata.photoURL}
           alt={dataMessage.metadata.displayName ?? 'profile-img'}
           referrerPolicy="no-referrer"
         />
