@@ -53,14 +53,14 @@ const TextField = ({ user }: TProps) => {
     <div className="flex justify-center items-center p-4">
       <input
         type="text"
-        className="w-full bg-slate-100 rounded-xl text-black outline-none px-2 py-1 dark:bg-gray-800 dark:text-white"
+        className="w-full bg-slate-300 rounded-xl text-black outline-none px-2 py-1 "
         value={message}
         onChange={handleSetMessage}
         onKeyDown={handleKeyPress}
       ></input>
-      <div className="flex justify-center items-center m-6 w-6 h-6 bg-gray-800 rounded-xl">
+      <div className="flex justify-center items-center m-6 w-6 h-6 p-4 bg-[#61a6f6] hover:bg-[#429bf5] rounded-md">
         <button
-          className="relative bg-gray-900 rounded-full focus:outline-none"
+          className="relative rounded-full focus:outline-none "
           onClick={handleOnSubmitMessage}
         >
           <span className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 transition-transform duration-300 w-6 h-6">

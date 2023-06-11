@@ -13,10 +13,10 @@ const GeneralChat = () => {
   return (
     <>
       {user != null && (
-        <div className="h-screen bg-[#1a1e25] flex items-center justify-center">
-          <div className="w-5/6 rounded-lg border-2 border-gray-800 h-full">
+        <div className="flex-grow bg-[#1a1e25] flex items-center justify-center">
+          <div className="w-5/6 rounded-lg border-2 border-gray-800 h-5/6">
             <div className="flex flex-col h-full">
-              <div className="flex-1 overflow-y-auto">
+              <div className="flex-1 overflow-y-auto ml-2">
                 <Suspense fallback={<Loading />}>
                   <CommentsList />
                 </Suspense>

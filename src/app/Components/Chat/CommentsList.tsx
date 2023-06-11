@@ -17,11 +17,7 @@ const CommentsList = () => {
             <>
               <Message
                 dataMessage={message}
-                // TODO: FIX TYPES
-                // @ts-expect-error Error in types
-                key={`${message.createdAt.seconds as string}-${
-                  message.metadata.uid
-                }`}
+                key={`${Math.random()}-${message.metadata.uid}`}
               />
             </>
           ))}
