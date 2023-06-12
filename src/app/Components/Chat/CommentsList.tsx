@@ -11,7 +11,7 @@ const CommentsList = () => {
     <>
       {status === Status.loading ? (
         <Loading />
-      ) : status === Status.success ? (
+      ) : status === Status.success && messages.length ? (
         <div className="flex-1 overflow-y-auto">
           {messages.map((message) => (
             <>
