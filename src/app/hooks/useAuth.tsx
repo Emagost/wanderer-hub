@@ -64,18 +64,18 @@ export const useAuth = () => {
       } else {
         setUser(null);
       }
+
+      if (user === null && pathname !== '/login') {
+        router.push('/login');
+      } else if (user != null && pathname === '/login') {
+        router.push('/generalChat');
+      }
     });
 
     return () => {
       unsubscribe();
     };
-  }, []);
-
-  useEffect(() => {
-    if (user != null && pathname === '/login') {
-      router.push('/generalChat');
-    }
-  }, [user, pathname, router]);
+  }, [pathname, router]);
 
   const logout = useCallback(async () => {
     await auth
