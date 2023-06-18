@@ -1,8 +1,14 @@
-import firebase from 'firebase/compat/app';
-import { getFirestore } from 'firebase/firestore';
-import firebaseConfig from './firebaseConfig';
+import { initializeApp } from 'firebase/app'
+import { getFirestore } from 'firebase/firestore'
+import firebaseConfig from './firebaseConfig'
 
-const app = firebase.initializeApp(firebaseConfig);
-const db = getFirestore(app);
+let dbInstance: ReturnType<typeof getFirestore> | null = null
 
-export { app, db };
+export const getDBInstance = () => {
+  if (!dbInstance) {
+    const app = initializeApp(firebaseConfig)
+    dbInstance = getFirestore(app)
+  }
+
+  return dbInstance
+}

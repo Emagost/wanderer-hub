@@ -1,13 +1,14 @@
 // Firebase
-import { addDoc, collection } from 'firebase/firestore';
-import { db } from '../../../firebase';
+import { addDoc, collection } from 'firebase/firestore'
+import { getDBInstance } from '../../../firebase'
 // Types
-import type IDataMessage from '../types/message';
+import type IDataMessage from '../types/message'
 
 const sendMessageDB = async (data: IDataMessage) => {
-  const { message, metadata, createdAt } = data;
+  const db = getDBInstance()
+  const { message, metadata, createdAt } = data
 
-  const messagesCollectionRef = collection(db, 'generalMessages');
+  const messagesCollectionRef = collection(db, 'generalMessages')
   const newMessage = {
     message,
     metadata: {
@@ -16,9 +17,9 @@ const sendMessageDB = async (data: IDataMessage) => {
       photoURL: metadata.photoURL,
     },
     createdAt,
-  };
+  }
 
-  await addDoc(messagesCollectionRef, newMessage);
-};
+  await addDoc(messagesCollectionRef, newMessage)
+}
 
-export default sendMessageDB;
+export default sendMessageDB

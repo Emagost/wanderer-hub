@@ -1,14 +1,15 @@
-'use client';
-import { Suspense } from 'react';
+'use client'
+import { Suspense } from 'react'
 // Hooks
-import { useAuth } from '../hooks/useAuth';
+import { useAuth } from '../hooks/useAuth'
 // Components
-import TextField from '../Components/TextField';
-import CommentsList from '../Components/CommentsList';
-import Loading from './Loading';
+import TextField from '../Components/TextField'
+import CommentsList from '../Components/CommentsList'
+import Image from 'next/image'
+import Link from 'next/link'
 
 const GeneralChat = () => {
-  const { logout, user } = useAuth();
+  const { logout, user } = useAuth()
 
   return (
     <>
@@ -17,14 +18,18 @@ const GeneralChat = () => {
           <section className="h-screen flex flex-col">
             <nav className="bg-[#1a1e25]">
               <div className="flex justify-between items-center p-4">
-                {user?.photoURL && (
-                  <img
-                    className="ml-5 rounded-full w-14 h-14 "
-                    src={user?.photoURL}
-                    alt="User Avatar"
-                    style={{ border: '2px solid #61a6f6' }}
-                  />
-                )}
+                <Link href="/myProfile">
+                  {user?.photoURL && (
+                    <Image
+                      className="ml-5 rounded-full w-14 h-14 "
+                      src={user?.photoURL}
+                      alt="User Avatar"
+                      width={56}
+                      height={56}
+                      style={{ border: '2px solid #61a6f6' }}
+                    />
+                  )}
+                </Link>
                 <h1 className="text-4xl font-bold text-white">WandererHub</h1>
                 <button
                   className="bg-[#61a6f6] hover:bg-[#429bf5] font-bold py-2 px-4 rounded-md"
@@ -39,9 +44,7 @@ const GeneralChat = () => {
               <div className="w-5/6 rounded-lg border-2 border-gray-800 h-5/6">
                 <div className="flex flex-col h-full">
                   <div className="flex-1 overflow-y-auto ml-2">
-                    <Suspense fallback={<Loading />}>
-                      <CommentsList />
-                    </Suspense>
+                    <CommentsList />
                   </div>
                   <TextField user={user} />
                 </div>
@@ -51,7 +54,7 @@ const GeneralChat = () => {
         </>
       )}
     </>
-  );
-};
+  )
+}
 
-export default GeneralChat;
+export default GeneralChat
