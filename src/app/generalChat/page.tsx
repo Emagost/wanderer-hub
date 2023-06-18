@@ -4,7 +4,7 @@ import { Suspense } from 'react';
 import { useAuth } from '../hooks/useAuth';
 // Components
 import TextField from '../Components/TextField';
-import CommentsList from '../Components/Chat/CommentsList';
+import CommentsList from '../Components/CommentsList';
 import Loading from './Loading';
 
 const GeneralChat = () => {
