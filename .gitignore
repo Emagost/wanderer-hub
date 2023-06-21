@@ -36,7 +36,7 @@ next-env.d.ts
 
 # firebase
 /firebaseConfig.js
+/config.js
 
-#env
-process.env
-.env
+
+
