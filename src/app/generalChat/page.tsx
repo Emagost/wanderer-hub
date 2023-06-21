@@ -1,5 +1,4 @@
 'use client'
-import { Suspense } from 'react'
 // Hooks
 import { useAuth } from '../hooks/useAuth'
 // Components
