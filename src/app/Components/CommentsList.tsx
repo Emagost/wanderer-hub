@@ -14,7 +14,7 @@ const CommentsList = () => {
           <Loading />
         </div>
       ) : status === Status.success && messages.length ? (
-        <div className="flex-1 overflow-y-auto">
+        <div className="flex-1 overflow-y-auto mb-2">
           {messages.map(message => (
             <>
               <Message dataMessage={message} key={`${Math.random()}-${message.metadata.uid}`} />

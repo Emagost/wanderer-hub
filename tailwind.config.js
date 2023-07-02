@@ -9,10 +9,14 @@ module.exports = {
     extend: {
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
-        'gradient-conic':
-          'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
+        'gradient-conic': 'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
+      },
+      backgroundColor: {
+        primary: '#1a1e25',
+        buttonPrimary: '#61a6f6',
+        buttonPrimaryHover: '#429bf5',
       },
     },
   },
-  plugins: [],
-};
+  plugins: [require('tailwind-scrollbar')],
+}
