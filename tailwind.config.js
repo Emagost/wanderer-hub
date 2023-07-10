@@ -16,6 +16,10 @@ module.exports = {
         buttonPrimary: '#61a6f6',
         buttonPrimaryHover: '#429bf5',
       },
+      borderColor: {
+        Primary: '#61a6f6',
+        PrimaryHover: '#429bf5',
+      },
     },
   },
   plugins: [require('tailwind-scrollbar')],
