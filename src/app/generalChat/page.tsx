@@ -40,10 +40,10 @@ const GeneralChat = () => {
                   Logout
                 </button>
               </div>
-              <hr className="border-t border-bubg-buttonPrimary" />
+              <hr className="border-t border-Primary" />
             </nav>
             <div className="flex-grow bg-primary flex items-center justify-center h-5/6">
-              <div className="w-5/6 rounded-lg border-2 border-gray-800 h-5/6">
+              <div className="w-5/6 rounded-lg border-2 border-Primary h-5/6">
                 <div className="flex flex-col h-full">
                   <div className="flex-1 overflow-y-auto ml-2 scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-transparent">
                     {status === Status.loading ? (

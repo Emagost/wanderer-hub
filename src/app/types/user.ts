@@ -4,6 +4,9 @@ export interface IUser {
   photoURL: string
   uid: string
   description?: string
+  location?: string
+  friends?:[]
+  travels?:[]
   metadata: {
     creationTime: string
     lastSignInTime: string
