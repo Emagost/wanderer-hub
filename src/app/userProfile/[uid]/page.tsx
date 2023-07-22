@@ -1,16 +1,65 @@
 'use client'
 import React, { memo, useEffect, useMemo, useState } from 'react'
 import Image from 'next/image'
-import { collection, doc, query, setDoc, where } from 'firebase/firestore'
+import { collection, deleteDoc, doc, query, setDoc, where } from 'firebase/firestore'
 import { useFirestoreCollectionData } from 'reactfire'
 import useAuth from '@/app/hooks/useAuth'
 import { IUser } from '@/app/types/user'
 import MainButtons from '@/app/Components/MainButtons'
 import TextareaAutosize from 'react-textarea-autosize'
+import Link from 'next/link'
+import { ITravel } from '@/app/types/travel'
+
+const LocationInfo = ({ latitude, longitude }: { latitude: number; longitude: number }) => {
+  const [locationData, setLocationData] = useState<{
+    city: any
+    country: any
+  } | null>(null)
+
+  const getPlaceFrom = async (latitude: number, longitude: number) => {
+    try {
+      const response = await fetch(
+        `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${latitude}&lon=${longitude}`,
+      )
+
+      const data = await response.json()
+      return { city: data.address.city, country: data.address.country }
+    } catch (error) {
+      console.log('Error: ', error)
+    }
+
+    return null
+  }
+
+  useEffect(() => {
+    const fetchLocationData = async () => {
+      const data = await getPlaceFrom(latitude, longitude)
+      setLocationData(data)
+    }
+
+    fetchLocationData()
+  }, [latitude, longitude])
+
+  if (locationData) {
+    return (
+      <p className="text-gray-600">
+        <strong>Country:</strong> {locationData.country}{' '}
+        {locationData.city && (
+          <>
+            <strong>City:</strong> {locationData.city}
+          </>
+        )}
+      </p>
+    )
+  }
+
+  return null
+}
 
 const UserProfile = ({ params }: { params: { uid: string } }) => {
   const [isEditing, setIsEditing] = useState<boolean>(false)
   const [isLoaded, setIsLoaded] = useState<boolean>(false)
+  const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [userData, setUserData] = useState<IUser | undefined>(undefined)
   const [description, setDescription] = useState<string>('')
   const [userName, setUserName] = useState<string>('')
@@ -22,10 +71,18 @@ const UserProfile = ({ params }: { params: { uid: string } }) => {
     [db, params.uid],
   )
 
+  const travelsQuery = useMemo(
+    () => query(collection(db, `users/${params.uid}/travels`)),
+    [db, params.uid],
+  )
+
   const { status, data } = useFirestoreCollectionData<IUser>(userQuery as any)
+  const { status: travelStatus, data: travelsData } = useFirestoreCollectionData<ITravel>(
+    travelsQuery as any,
+  )
 
   useEffect(() => {
-    if (status === 'success') {
+    if (status === 'success' && travelStatus === 'success') {
       const user = data?.[0]
       if (user) {
         setUserData(user)
@@ -37,7 +94,7 @@ const UserProfile = ({ params }: { params: { uid: string } }) => {
     } else {
       setIsLoaded(false)
     }
-  }, [data, status])
+  }, [data, status, travelStatus])
 
   const handleEdit = () => {
     setIsEditing(!isEditing)
@@ -70,6 +127,13 @@ const UserProfile = ({ params }: { params: { uid: string } }) => {
     })
   }
 
+  const handleRemoveTravel = async (travelId: string) => {
+    if (travelId) {
+      const refTravel = doc(db, `users/${user?.uid}/travels/${travelId}`)
+      await deleteDoc(refTravel)
+    }
+    setShowDeleteModal(false)
+  }
   return (
     <>
       {isLoaded && !!user && !!userData && (
@@ -153,6 +217,18 @@ const UserProfile = ({ params }: { params: { uid: string } }) => {
                     </div>
                     <div className="w-full lg:w-4/12 px-4 lg:order-1">
                       <div className="flex justify-center py-4 lg:pt-4 pt-8">
+                        <div className="mr-4 mt-2 p-3 text-center">
+                          {user.uid === params.uid && (
+                            <Link href={'/loadTravel'}>
+                              <button
+                                className="bg-pink-500 hover:bg-pink-600 uppercase text-white font-bold hover:shadow-md shadow text-xs px-4 py-2 rounded outline-none focus:outline-none sm:mr-2 mb-1 ease-linear transition-all duration-150"
+                                type="button"
+                              >
+                                Add travel
+                              </button>
+                            </Link>
+                          )}
+                        </div>
                         <div className="mr-4 p-3 text-center">
                           <span className="text-xl font-bold block uppercase tracking-wide text-blue-600">
                             {userData?.friends?.length ?? 0}
@@ -227,23 +303,107 @@ const UserProfile = ({ params }: { params: { uid: string } }) => {
                 </div>
               </div>
               {/* Travels */}
-              <section className="flex flex-col items-center bg-white w-full">
+              <section className="flex flex-col items-center bg-white w-full max-h-96">
                 <h3 className="text-4xl font-semibold leading-normal mb-2 text-gray-700 mt-8">
                   Next Travels
                 </h3>
                 <hr className="w-full border-t border-gray-300 my-4" />
-                <div className="flex items-start m-3 p-3 space-x-4 rounded-lg shadow-md w-full bg-gray-200">
-                  <Image
-                    height={150}
-                    width={150}
-                    alt="travel image"
-                    src={userData?.photoURL}
-                    className="w-16 h-16 object-cover rounded"
-                  />
-                  <div>
-                    <h2 className="text-lg font-semibold text-gray-700">{'Testing'}</h2>
-                    <p className="text-gray-600">{'Testing more travels'}</p>
-                  </div>
+                <div className="flex flex-col items-center overflow-y-auto flex-1 w-full mb-1">
+                  {travelsData?.length ? (
+                    travelsData.map((travel, index) => (
+                      <div
+                        className="flex items-start mb-2 p-3 space-x-4 rounded-lg shadow-md w-90 bg-gray-200 w-11/12 relative"
+                        key={index}
+                      >
+                        <div className="w-16 h-16 bg-gray-200 rounded-full overflow-hidden">
+                          <Image
+                            height={150}
+                            width={150}
+                            alt="travel image"
+                            src={userData?.photoURL}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                        <div className="flex-1">
+                          <h2 className="text-lg font-semibold text-gray-700">
+                            {travel.travelName}
+                          </h2>
+                          <p className="text-gray-600">{travel.description}</p>
+                          <p className="text-gray-600">
+                            <strong>Arrives:</strong> {travel.arrivesDate},{' '}
+                            <strong>Departs:</strong> {travel.departDate}
+                          </p>
+                          <div className="flex">
+                            <p className="text-gray-600">
+                              <strong>Departure: </strong>
+                            </p>{' '}
+                            <LocationInfo
+                              latitude={travel.coords.depart.lat}
+                              longitude={travel.coords.depart.lng}
+                            />
+                          </div>
+                          <div className="flex">
+                            <p className="text-gray-600">
+                              <strong>Arrives: </strong>
+                            </p>{' '}
+                            <LocationInfo
+                              latitude={travel.coords.arrive.lat}
+                              longitude={travel.coords.arrive.lng}
+                            />
+                          </div>
+                          <button
+                            className="absolute top-0 right-0 p-2 m-2 bg-red-400 text-white rounded-full"
+                            onClick={() => setShowDeleteModal(true)}
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              className="h-3 w-3"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="currentColor"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M6 18L18 6M6 6l12 12"
+                              />
+                            </svg>
+                          </button>
+                        </div>
+                        {showDeleteModal && (
+                          <div className="fixed inset-0 flex items-center justify-center z-50">
+                            <div className="absolute inset-0 bg-black opacity-50"></div>
+                            <div className="modal-container bg-white w-full md:max-w-md mx-auto rounded shadow-lg z-50 overflow-y-auto top-0 bottom-0 left-0 right-0">
+                              <div className="modal-content py-4 text-left px-6">
+                                <p className="text-xl font-semibold text-gray-700">
+                                  ¿Estás seguro de que deseas eliminar este viaje?
+                                </p>
+                                <div className="mt-5 flex justify-end space-x-4">
+                                  <button
+                                    className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 focus:outline-none"
+                                    onClick={() => handleRemoveTravel(travel.id)}
+                                  >
+                                    Eliminar
+                                  </button>
+                                  <button
+                                    className="px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400 focus:outline-none"
+                                    onClick={() => setShowDeleteModal(false)}
+                                  >
+                                    Cancelar
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    ))
+                  ) : (
+                    <div className="rounded-lg bg-gray-200 p-4 shadow-md mb-4 w-90">
+                      <p className="text-gray-600 text-center">No upcoming travels available.</p>
+                    </div>
+                  )}
                 </div>
               </section>
             </div>
